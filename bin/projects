@@ -4,7 +4,6 @@ export SHELL=$(which fish)
 alias tmux="/usr/bin/env tmux"
 alias git="/usr/bin/env git"
 alias fzf="/usr/bin/env fzf"
-alias rclone="/usr/bin/env rclone"
 
 if ! command -v "tmux" &> /dev/null; then
   >&2 echo "projects: tmux command could not be found"
@@ -18,11 +17,6 @@ fi
 
 if ! command -v fzf &> /dev/null; then
   >&2 echo "projects: fzf command could not be found"
-  exit
-fi
-
-if ! command -v rclone &> /dev/null; then
-  >&2 echo "projects: rclone command could not be found"
   exit
 fi
 
@@ -107,9 +101,8 @@ case "$1" in
         project="$projects/$name"
         if [ -d "$project" ]; then
           echo "projects: $project"
-          rm -rf "$project"/**/tmp/*
-          rm -rf "$project"/**/log/*
-          rclone -v sync "$project" projects:/"$name"
+          branch=$(cat "$project/.git/HEAD" | cut -d "/" -f3)
+          git push cloud "$branch"
         else
           >&2 echo "projects: could not cd to $project"
         fi
