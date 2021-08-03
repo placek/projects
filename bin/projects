@@ -102,7 +102,7 @@ case "$1" in
         if [ -d "$project" ]; then
           echo "projects: $project"
           branch=$(cat "$project/.git/HEAD" | cut -d "/" -f3)
-          git push cloud "$branch"
+          git push backup "$branch"
         else
           >&2 echo "projects: could not cd to $project"
         fi
